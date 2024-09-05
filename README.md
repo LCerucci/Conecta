@@ -1,32 +1,25 @@
-# Conecta
-A plataform to anounce courses in Rio Claro by the city hall, by the Economic Development Department,
-in partnership with Claretianos Universitary Center.
+# Connect
 
-# Thecnichal info
-The project is devided in backend and frontend aproachs, building an simple API to be consumed in the
-frontend. The thecnologies aplied in this project are listed bellow:
+The platform to announce courses in Rio Claro is developed by the city hall, through the Economic Development Department, in partnership with Claretianos Universitary Center.
 
-*TypeScript
-  The first option for development was using JavaScript, wich worked fine during development but since
-  JS uses dinamic typing, some parts of the code ware quite dificult to debug. For best pratices, TS came
-  resolve the typing issue and make the code easy to maintain.
+## Technical Info
 
-*MySQL
-  DBMS used in this project by familiarity, most developers and students at some point learn how to use it,
-  plus is really easy to maintain the data base using mySQL, the workbeanch tool is handful for those who aren't
-  used to write SQL commands.
+The project is divided into backend and frontend approaches, building a simple API to be consumed in the frontend. The technologies applied in this project are listed below:
 
-*React
-  Considering the learning curve, react is always a great option to compound the pages features. Use components
-  make it easy to edit features in the frontend and also make the code more readable without endless html.
+### TypeScript
+Initially, JavaScript was used for development, which worked fine but presented challenges due to its dynamic typing. TypeScript was introduced to address typing issues, making the code easier to maintain and debug.
 
-*Express
-  Express is simple to use and easy to learn, any other studenty who gets the mission to develop new features
-  and implement then, will learn express really fast (once the studenty is familiar with async programming).
+### MySQL
+MySQL is the chosen DBMS for this project due to familiarity and widespread use among developers and students. It's easy to maintain the database using MySQL, and the Workbench tool is handy for those who aren't accustomed to writing SQL commands.
 
-*Node.js
-  No secreats here, JS runtime enviroment. Also, the https server is provided using node, since the express only 
-  provides http.
+### React
+Given its learning curve, React is a great choice for building page features. The use of components simplifies feature edits in the frontend and makes the code more readable without the need for extensive HTML.
 
-*Dependencies 
-  Take a look on package.json, all dependencies are listed there.
+### Express
+Express is simple to use and easy to learn. Students who need to develop and implement new features will quickly become familiar with Express, especially if they are already comfortable with asynchronous programming.
+
+### Node.js
+Node.js is the JavaScript runtime environment used in this project. It provides the HTTPS server, as Express itself only supports HTTP.
+
+### Dependencies
+Please refer to `package.json` for a list of all dependencies used in this project.
