@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { CourseUpdateService } from "../../Service/Course/Update";
 import { UpdateCourse } from "../../Interfaces/Course/CourseUpdate";
+import { FieldError } from '../../Error/Controller/FieldError';
+import { MatchError } from '../../Error/Controller/MatchError';
 
 const Update: CourseUpdateService = new CourseUpdateService();
 
@@ -14,7 +16,7 @@ export class CoursePutController{
             const id: number = parseInt(req.params.id, 10);
 
             if(!id)
-                throw new Error("cade o id");
+                throw new FieldError("Erro ao atualizar curso.", "O parametro único pode não ter sido passado.");
 
             const params: UpdateCourse = {
                 name: req.body.name,
@@ -23,6 +25,9 @@ export class CoursePutController{
                 degree: req.body.degree,
                 tuitionFee: req.body.tuitionFee
             }
+
+            if(!params)
+                throw new MatchError("Erro ao atualizar curso.", "Talvez os tipos não batam com os parâmetros.")
 
             const result: boolean = await Update.updateCourse(id, params);
 
