@@ -1,4 +1,5 @@
 export class FieldError extends Error{
+    statusCode: number = 400;
     details: string;
 
     constructor(message: string, details: string){

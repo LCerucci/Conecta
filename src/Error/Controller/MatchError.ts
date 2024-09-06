@@ -1,4 +1,5 @@
 export class MatchError extends Error{
+    statusCode: number = 400; 
     details: string;
 
     constructor(message: string, details: string){
