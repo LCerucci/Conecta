@@ -1,9 +1,11 @@
-import { UserDataResult } from "../../Interfaces/User";
 import { UserGetService } from "./Get";
-import { verifyPassword } from "../../Service/Auth/VerifyPassword";
 import { LoginJSON } from "../../Interfaces/User";
-import { generateJWT } from "../../Service/Auth/GenerateJwt";
 import { LoginResponse} from "../../Interfaces/User";
+import { AuthError } from "../../Error/Auth/AuthError";
+import { UserDataResult } from "../../Interfaces/User";
+import { generateJWT } from "../../Service/Auth/GenerateJwt";
+import { verifyPassword } from "../../Service/Auth/VerifyPassword";
+
 
 const Get : UserGetService = new UserGetService();
 
@@ -14,7 +16,7 @@ export class Login{
     async login(userName: string, password: string): Promise<LoginResponse | null> {
         try {
             if (!userName || !password)
-                throw new Error("Field's can't be empty");
+                throw new AuthError("Credenciais não fornecidas.", "Verifique as credenciais.");
     
             const user: UserDataResult | null = await Get.getUserByName(userName);
     

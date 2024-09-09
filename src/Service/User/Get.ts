@@ -1,6 +1,7 @@
 import { RowDataPacket } from "mysql2";
 import { UserDB } from "../../DataBase/User/Read";
 import { UserDataResult } from "../../Interfaces/User";
+import { ReadError } from "../../Error/CRUDerror/CRUDError";
 
 const Get: UserDB = new UserDB();
 
@@ -11,7 +12,7 @@ export class UserGetService{
     async getUserByName(userName: string): Promise<UserDataResult | null>{
         try{
             if(!userName)
-                throw new Error();
+                throw new ReadError("Usuário não encontrado.", "Verifique o nome de usuário.");
 
             const info: RowDataPacket | null= await Get.readUserByUserName(userName);
 

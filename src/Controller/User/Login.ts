@@ -2,6 +2,7 @@ import { LoginResponse } from "../../Interfaces/User";
 import { Login } from "../../Service/User/Login";
 import { Request, Response, NextFunction } from 'express';
 import { setCookie } from "../Cookie/GenerateCookie";
+import { FieldError } from "../../Error/Controller/FieldError";
 
 const LoginService: Login = new Login();
 
@@ -17,7 +18,7 @@ export class LoginController {
             const password: string = req.body.password;
 
             if (!userName || !password)
-                throw new Error("nome ou senha");
+                throw new FieldError("Erro ao realizar login.", "Verifique as credenciais.");
 
             const user: LoginResponse | null = await LoginService.login(userName, password);
 

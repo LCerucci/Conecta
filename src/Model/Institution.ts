@@ -1,3 +1,4 @@
+import { InvalidField } from "../Error/Model/RegexError";
 import { InstitutionDataResult } from "../Interfaces/Institution/InstitutionRead"; 
 
 export class Institution{
@@ -84,7 +85,7 @@ export class Institution{
 
     sanitizeName(name: string): string | void{
         if(name.length > 45)
-            throw new Error("jbdbfd");
+            throw new InvalidField("Nome da instituição fora dos padrões.", "O nome possui mais de 45 caracteres.");
         else 
             return name;
     }
@@ -94,10 +95,10 @@ export class Institution{
             return degree;
         else if(degree === 'tecnico')
             return degree
-        else if(degree === 'graduação')
+        else if(degree === 'graduaçao')
             return degree;
         else 
-            throw new Error("Field's don't match");
+            throw new InvalidField("Nivel do curso inválido.", "Os padrões se restringem a 'livre', 'tecnico' ou 'graduaçao'.");
     }
 
     sanitizeContact(contact: string): string{
@@ -106,9 +107,9 @@ export class Institution{
             if(regex.test(contact))
                 return contact
             else
-                throw new Error("adsjdbs");
+                throw new InvalidField("Contato fora dos padrões.", "O contato deve conter apenas caracteres numericos.");
         else
-            throw new Error("adsjdbs");
+            throw new InvalidField("Contato fora dos padrões.","O contato deve ter entre 10 e 11 caracteres especificamente.");
     }
 
     sanitizeEmail(email: string): string {

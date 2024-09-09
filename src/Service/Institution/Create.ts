@@ -1,3 +1,4 @@
+import { CreateError } from "../../Error/CRUDerror/CRUDError";
 import { InstitutionCreate } from "../../DataBase/Institution/Create";
 import { InstitutionCreateData } from "../../Interfaces/Institution/InstitutionCreate";
 
@@ -10,7 +11,7 @@ export class InstitutionCreateService{
     async createInstitution(params: InstitutionCreateData): Promise<boolean>{
         try{
             if(!params)
-                throw new Error("message");
+                throw new CreateError("Falha ao criar instituição.", "Parametros vazios.");
 
             const result: boolean = await Create.createInstitution(
                 params.name,

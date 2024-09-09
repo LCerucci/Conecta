@@ -1,3 +1,4 @@
+import { UpdateError } from "../../Error/CRUDerror/CRUDError";
 import { InstitutionUpdate } from "../../DataBase/Institution/Update";
 import { InstitutionUpadateData } from "../../Interfaces/Institution/InstitutionUpdate";
 
@@ -10,7 +11,7 @@ export class InstitutionUpdateService{
     async updateInstitution(id: number, params: InstitutionUpadateData): Promise<boolean>{
         try{
             if(!id)
-                throw new Error("message");
+                throw new UpdateError("Falha ao atualizar instituição.", "Parêmetro não fornecido.");
 
             const result: boolean = await Update.updateInstitution(id, params);
 

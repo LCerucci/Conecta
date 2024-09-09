@@ -1,3 +1,5 @@
+import { InvalidField } from "../Error/Model/RegexError";
+import { TypeError } from "../Error/Model/TypeError"
 import { CourseResult } from "../Interfaces/Course/CourseGet"; 
 
 export class Course {
@@ -23,7 +25,7 @@ export class Course {
         return this.id;
     }
 
-    getidInstitution(): number | undefined{
+    getIdInstitution(): number | undefined {
         return this.idInst;
     }
 
@@ -72,14 +74,14 @@ export class Course {
         if(regex.test(name))
             return name;
         else 
-            throw new Error("invalid, field");
+            throw new InvalidField("Nome não atende aos padrões.", "Verifique os padrões de entrada.");
     }
 
     sanitizeFee(fee: string): string | void{
         if(fee === 'gratuito' || fee === 'pago')
             return fee
         else 
-            throw new Error("Invalid field");
+            throw new InvalidField("Modalidade de pagamento não atende aos padrões.", "Entrafa estrita 'gratuito' ou 'pago'");
     }
 
     sanitizeDescription(description: string): string {
@@ -91,7 +93,7 @@ export class Course {
         if(regex.test(field))
             return field;
         else
-            throw new Error("invalid field");
+            throw new InvalidField("Área não atende aos padrões", "Verifique os parâmetros de entrada.");
     }
 
     sanitizeDegree(degree: string): string | void{
@@ -102,7 +104,7 @@ export class Course {
         else if(degree === 'graduação')
             return degree;
         else 
-            throw new Error("Field's don't match");
+            throw new InvalidField("Nível do curso não atende os padrões.", "Verifique os parâmetros de entrada.");
     }
 
     CourseJSON(): CourseResult{

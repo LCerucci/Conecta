@@ -1,6 +1,7 @@
+import { Course } from "../../Model/Course";
+import { UpdateError } from "../../Error/CRUDerror/CRUDError";
 import { CourseUpdate } from "../../DataBase/Course/Update";
 import { UpdateCourse } from "../../Interfaces/Course/CourseUpdate";
-import { Course } from "../../Model/Course";
 
 const Update: CourseUpdate = new CourseUpdate();
 
@@ -11,7 +12,7 @@ export class CourseUpdateService{
     async updateCourse(id: number, info: UpdateCourse): Promise<boolean>{
         try{
             if(!id)
-                throw new Error("message");
+                throw new UpdateError("Falha ao atualizar curso.", "Parâmetro não fonecido.");
 
             const course = new Course(info.name, info.field, info.description, info.degree, info.tuitionFee, undefined, id);
 

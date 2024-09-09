@@ -1,3 +1,4 @@
+import { ReadError } from "../../Error/CRUDerror/CRUDError";
 import { conn } from "../Connection";
 import { getForgeParam, getForgeId, SQLALL } from "../SQLForge/CourseSQLForge";
 import { RowDataPacket, FieldPacket } from "mysql2";
@@ -8,6 +9,10 @@ export class CourseRead{
 
     async readCourseById(id: number): Promise<RowDataPacket | null>{
         try{
+
+            if(!id)
+                throw new ReadError("Erro ao encontrar curso.", "Talvez o parametro não tenha sido passado.");
+
             await conn.beginTransaction();
 
             const SQL: string = getForgeId(id);
@@ -58,6 +63,10 @@ export class CourseRead{
 
     async readCourseByParam(param: string): Promise<RowDataPacket[] | null> {
         try{
+
+            if(!param)
+                throw new ReadError("Falha ao buscar por parametro.", "Talvez nenhum parametro tenha sido fornecido.");
+
             await conn.beginTransaction();
 
             const SQL: string = getForgeParam(param);

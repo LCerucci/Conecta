@@ -1,3 +1,5 @@
+import { InvalidField } from "../Error/Model/RegexError";
+
 export class Admin {
  
     private id: number;
@@ -39,7 +41,7 @@ export class Admin {
     }
 
     setPassword(newPassword: string): void {
-        this.password = this.password;
+        this.password = newPassword;
     }
 
     getRole(): number{
@@ -56,7 +58,7 @@ export class Admin {
         if(regex.test(userName))
             return userName;
         else
-            throw new Error("user name dont fit");
+            throw new InvalidField("O campo nome não atende aos padrões.", "Corrija o nome de usuário na entrada.");
     }
 
     sanitizeName(name: string): string | void{
@@ -65,7 +67,7 @@ export class Admin {
         if(regex.test(name))
             return name;
         else
-            throw new Error("Name don't fit.")
+            throw new InvalidField("O campo nome não atende aos padrões.", "Corrija o nome de entrada.");
     }
 
     sanitizePassword(password: string): string | void{
@@ -77,14 +79,14 @@ export class Admin {
         else if(outputRegex.test(password))
             return password
         else
-            throw new Error("Passwor don't match");
+            throw new InvalidField("Credenciais incorretas.", "Verifique as credencias e tente novamente.");
     }
 
     sanitizeRole(role: number): number | void{
         if(typeof role === 'number' && role >= 0 && role <= 2)
             return role;
         else
-            throw new Error("Role don't match");
+            throw new TypeError("Tipo da permissão inválido, esperado 'number'");
     }
 
     adminJson(): Object {

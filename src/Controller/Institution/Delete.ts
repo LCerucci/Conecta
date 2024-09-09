@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { InstituitionDeleteService } from "../../Service/Institution/Delete";
+import { FieldError } from "../../Error/Controller/FieldError";
 
 const Delete: InstituitionDeleteService = new InstituitionDeleteService();
 
@@ -12,14 +13,14 @@ export class InstitutionDeleteController{
             const id: number = parseInt(req.params.id, 10);
 
             if(!id)
-                throw new Error("cade o id");
+                throw new FieldError("Erro ao deletar instituição.", "O parâmetro único pode não ter sido fornecido.");
 
             const result: boolean = await Delete.deleteInstitution(id);
 
             if(result)
                 res.status(200).json({message: "Instituição deletada com sucesso."});
             else
-                res.status(400).json({message: "Falha ao deletar o recurso."});
+                res.status(404).json({message: "Falha ao deletar o recurso, talvez o mesmo não exista."});
 
         }catch(err){
             console.log(err);

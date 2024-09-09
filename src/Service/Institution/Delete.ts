@@ -1,3 +1,4 @@
+import { DeleteError } from "../../Error/CRUDerror/CRUDError";
 import { InstituitionDelete } from "../../DataBase/Institution/Delete";
 
 const Delete: InstituitionDelete = new InstituitionDelete();
@@ -9,7 +10,7 @@ export class InstituitionDeleteService{
     async deleteInstitution(id: number): Promise<boolean>{
         try{
             if(!id)
-                throw new Error("message");
+                throw new DeleteError("Falha ao deletar curso.", "Parâmetro não fornecido.");
 
             const result: boolean = await Delete.deleteInstitution(id);
 

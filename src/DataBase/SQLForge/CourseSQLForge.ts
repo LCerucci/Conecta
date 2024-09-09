@@ -1,11 +1,8 @@
-import { UpdateCourse } from "../../Interfaces/Course/CourseUpdate";
-
-export const SQLALL: string = "SELECT * FROM Courses";
 
 export function getForgeParam(param: string): string{
     const regex: RegExp = /^[a-zA-Z0-9_]+$/
     if(!regex.test(param))
-        throw new Error("Eu sei oq você está tentando seu sasfado.");
+        throw new Error("Parametro REJEITADO!");
 
     return `SELECT idCourse, 
             idInstitution, 
@@ -36,10 +33,19 @@ export function getForgeId(id: number): string{
 export function updateForgeParam(param: string): string{
     const regex: RegExp = /^[a-zA-Z0-9_]+$/
     if(!regex.test(param))
-        throw new Error("Eu sei oq você está tentando seu sasfado.");
+        throw new Error("Parametro REJEITADO!");
 
     return `UPDATE 
             Course 
             SET ${param}=? 
             WHERE idCourse=?`;
 }
+
+
+export const SQLALL: string = "SELECT * FROM Courses";
+
+export const SQLCREATE: string = `INSERT INTO 
+                                  Course(idInstitution, name, field, description, degree, tuitionFee) 
+                                  VALUES (?, ?, ?, ?, ?, ?)`; 
+                                  
+export const SQLDELETE: string = "DELETE FROM ConectaCourse WHERE idConectaCourse=?";

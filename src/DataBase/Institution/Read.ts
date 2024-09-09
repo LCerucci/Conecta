@@ -1,8 +1,8 @@
 import { conn } from "../Connection";
 import { RowDataPacket, FieldPacket } from 'mysql2';
+import { ReadError } from "../../Error/CRUDerror/CRUDError";
 import { getForgeParam, getForgeId, SQLALL } from "../SQLForge/InstSQLForge";
 
-const message: string ="";
 
 export class InstitutionRead {
     constructor() {
@@ -10,6 +10,10 @@ export class InstitutionRead {
 
     async readInstitutionById(id: number): Promise<RowDataPacket | null> {
         try {
+
+            if(!id)
+                throw new ReadError("Falha ao encontrar curso.", "Talvez o parâmetro não tenha sido fornecido.");
+
             await conn.beginTransaction();
 
             const SQL: string = getForgeId(id);
@@ -21,7 +25,7 @@ export class InstitutionRead {
                 return result[0];
             }
             else
-                throw new Error(message);
+                throw new ReadError("Falha ao encontrar curso.", "Talvez o curso não exista.");
 
         } catch (err) {
             console.log(err);
@@ -43,7 +47,7 @@ export class InstitutionRead {
                 return result;
             }
             else
-                throw new Error(message);
+            throw new ReadError("Falha ao encontrar curso.", "Talvez o curso não exista.");
 
         } catch (err) {
             await conn.rollback();
@@ -63,7 +67,7 @@ export class InstitutionRead {
                 return result;
             }
             else
-                throw new Error(message);
+            throw new ReadError("Falha ao encontrar curso.", "Talvez o curso não exista.");
 
         } catch (err) {
             await conn.rollback();

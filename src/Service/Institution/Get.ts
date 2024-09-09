@@ -1,5 +1,6 @@
 import { RowDataPacket } from "mysql2";
 import {  Institution } from "../../Model/Institution";
+import { ReadError } from "../../Error/CRUDerror/CRUDError";
 import { InstitutionRead } from "../../DataBase/Institution/Read";
 import { InstitutionDataResult } from "../../Interfaces/Institution/InstitutionRead";
 
@@ -12,7 +13,7 @@ export class InstitutionGetService{
     async getInstitutionById(id: number): Promise<InstitutionDataResult | null>{
         try{
             if(!id)
-                throw new Error("message");
+                throw new ReadError("Falha ao encontrar curso.", "Parâmetro não frnecido.");
 
             const result: RowDataPacket | null = await Get.readInstitutionById(id);
 

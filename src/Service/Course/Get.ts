@@ -2,6 +2,7 @@ import { RowDataPacket } from "mysql2";
 import { Course } from "../../Model/Course";
 import { CourseRead } from "../../DataBase/Course/Read";
 import { CourseResult } from "../../Interfaces/Course/CourseGet";
+import { ReadError } from "../../Error/CRUDerror/CRUDError";
 
 const Get: CourseRead = new CourseRead();
 
@@ -12,7 +13,7 @@ export class CourseGetService {
     async getCourseById(id: number): Promise<CourseResult | null> {
         try {
             if (!id)
-                throw new Error("invalid");
+                throw new ReadError("Falha ao procurar curso.", "Parâmetro não fornecido.");
 
             const result: RowDataPacket | null = await Get.readCourseById(id);
 

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { FieldError } from "../../Error/Controller/FieldError";
 import { InstitutionCreateService } from "../../Service/Institution/Create";
 
 const Post: InstitutionCreateService = new InstitutionCreateService();
@@ -20,7 +21,7 @@ export class InstitutionPostController{
             }
 
             if(!params)
-                throw new Error("preencha todos os campos.");
+                throw new FieldError("Erro na criação da instituição.", "Talvez algum campo esteja em branco.");
 
             const result: boolean = await Post.createInstitution(params);
 

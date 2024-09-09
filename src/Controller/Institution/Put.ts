@@ -1,6 +1,7 @@
 import { InstitutionUpdateService } from "../../Service/Institution/Update";
 import { InstitutionUpadateData } from "../../Interfaces/Institution/InstitutionUpdate"
 import { Request, Response, NextFunction } from 'express';
+import { FieldError } from "../../Error/Controller/FieldError";
 
 const Put: InstitutionUpdateService = new InstitutionUpdateService();
 
@@ -21,6 +22,9 @@ export class InstitutionPutController{
                 link: req.body.link,
                 description: req.body.description
             }
+
+            if(!id)
+                throw new FieldError("Erro ao atualizar curso.", "Talvez o parametro não tenha sido fornecido.");
 
             const result: boolean = await Put.updateInstitution(id, params);
 
