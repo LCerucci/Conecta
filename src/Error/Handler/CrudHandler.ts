@@ -1,6 +1,6 @@
 import { CreateError, UpdateError, ReadError, DeleteError } from "../CRUDerror/CRUDError";
 
-export function HandelCrud(err: Error): void{
+export function HandleCrud(err: any): void{
     if( 
         err instanceof CreateError ||
         err instanceof ReadError   ||

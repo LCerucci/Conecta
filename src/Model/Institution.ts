@@ -102,9 +102,8 @@ export class Institution{
     }
 
     sanitizeContact(contact: string): string{
-        const regex: RegExp = /^\d+$/;
-        if(contact.length > 11 || contact.length < 10)
-            if(regex.test(contact))
+        if(/^[0-9]+$/.test(contact))
+            if(contact.length <= 11 && contact.length >= 10)
                 return contact
             else
                 throw new InvalidField("Contato fora dos padrões.", "O contato deve conter apenas caracteres numericos.");
@@ -120,7 +119,9 @@ export class Institution{
     }
 
     sanitizeDescription(description: string): string {
-        return description.replace(/<\/?[^>]+(>|$)/g, "");
+        console.log(typeof description);
+        let sanitized: string = description.replace(/<\/?[^>]+(>|$)/g, "");
+        return sanitized;
     }
 
     institutionJSON(): InstitutionDataResult{

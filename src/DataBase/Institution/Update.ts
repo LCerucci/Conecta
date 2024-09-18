@@ -1,67 +1,63 @@
-import { conn } from "../Connection";
-import { ResultSetHeader, FieldPacket } from "mysql2";
-import { updateForgeParam } from "../SQLForge/InstSQLForge";
+import { DataBase } from "../Connection";
 import { UpdateError } from "../../Error/CRUDerror/CRUDError";
 import { InstitutionUpadateData } from "../../Interfaces/Institution/InstitutionUpdate";
+import { HandleCrud } from "../../Error/Handler/CrudHandler";
 
 
 export class InstitutionUpdate{
+    private db: DataBase = new DataBase();
+    private message: string = "Falha ao atualizar curso.";
+    private deitails: string = "Verifique o fluxo, nenhum campo foi afetado."
+
     constructor(){
     }
 
     async updateInstitution(id: number, params: InstitutionUpadateData): Promise<boolean>{
-        try{
-            await conn.beginTransaction();
+        return this.db.executeBoolTransaction(async (conn) => {
+            try{
+                if(!id)
+                    throw new UpdateError("Falha ao atualizar recurso", "Parametro não fornecido.");
 
-            if(params.name !== undefined){
-                const SQL: string = updateForgeParam(params.name);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError("Falha ao atualizar campo.", "Talvez o tipo esteja incorreto ou o valor se perdido."); 
+                const SQL: string = this.updateForgeParam(params, id);
+                
+                console.log(SQL);
+
+                const updateParams: string[] = [];
+
+                Object.keys(params).forEach((key) => {
+                    if(params[key as keyof InstitutionUpadateData] !== undefined && params[key as keyof InstitutionUpadateData] !== null)
+                        updateParams.push(params[key as keyof InstitutionUpadateData]);
+                });
+
+                if(!SQL || !updateParams)
+                    throw new UpdateError(this.message, this.deitails);
+
+                await conn.execute(SQL, updateParams);
+
+                return true;
+
+            }catch(err: any){
+                HandleCrud(err);
+                return false;
             }
+        });
+    }
 
-            if(params.address !== undefined){
-                const SQL: string = updateForgeParam(params.address);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError("Falha ao atualizar campo.", "Talvez o tipo esteja incorreto ou o valor se perdido."); 
-            }
+    private updateForgeParam(param: InstitutionUpadateData, id: number): string{  
+        const fields: string[] = ['name', 'educationLevel', 'contact', 'email', 'address', 'link', 'description'];
+        const params: string[] = [];
+        
+        Object.keys(param).forEach(key => {
+            if(param[key as keyof InstitutionUpadateData]!== undefined)
+                params.push(key as keyof InstitutionUpadateData);
+        });
 
-            if(params.contact !== undefined){
-                const SQL: string = updateForgeParam(params.contact);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError("Falha ao atualizar campo.", "Talvez o tipo esteja incorreto ou o valor se perdido."); 
-            }
+        const finalParams: string[] = fields.filter((element) => params.includes(element));
+        
+        const updateFields: string = finalParams.map(field => `${field}=?`).join(', ');
 
-            if(params.description !== undefined){
-                const SQL: string = updateForgeParam(params.description);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError("Falha ao atualizar campo.", "Talvez o tipo esteja incorreto ou o valor se perdido."); 
-            }
-
-            if(params.educationLevel !== undefined){
-                const SQL: string = updateForgeParam(params.educationLevel);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError("Falha ao atualizar campo.", "Talvez o tipo esteja incorreto ou o valor se perdido."); 
-            }
-
-            if(params.email !== undefined){
-                const SQL: string = updateForgeParam(params.email);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError("Falha ao atualizar campo.", "Talvez o tipo esteja incorreto ou o valor se perdido."); 
-            }
-
-            if(params.link !== undefined){
-                const SQL: string = updateForgeParam(params.link);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError("Falha ao atualizar campo.", "Talvez o tipo esteja incorreto ou o valor se perdido."); 
-            }
-
-            await conn.commit();
-            return true;
-
-        }catch(err){
-            console.log(err);
-            conn.rollback();
-            return false;
-        }
+        const SQL: string = `UPDATE Institution SET ${updateFields} WHERE id=${id}`;
+        
+        return SQL;
     }
 }

@@ -1,6 +1,6 @@
 import { InvalidField } from "../Error/Model/RegexError";
-import { TypeError } from "../Error/Model/TypeError"
 import { CourseResult } from "../Interfaces/Course/CourseGet"; 
+import { UpdateCourse } from "../Interfaces/Course/CourseUpdate";
 
 export class Course {
         private id?: number;
@@ -70,6 +70,7 @@ export class Course {
     }
 
     sanitizeName(name: string): string | void{
+        console.log(name);
         const regex: RegExp = /^([A-Z][a-z]*)(\s[A-Z][a-z]*){0,10}$/
         if(regex.test(name))
             return name;
@@ -117,5 +118,17 @@ export class Course {
             degree: this.degree,
             tuitionFee: this.tuitionFee
         };
+    }
+
+    updateParamFilter(params: UpdateCourse): UpdateCourse{
+        const result: UpdateCourse = {
+            name: this.name === params.name ? "" : params.name,
+            field: this.field === params.field ? "" : params.field,
+            description: this.description === params.description ? "" : params.description,
+            degree: this.degree === params.degree ? "" : params.degree,
+            tuitionFee: this.tuitionFee === params.tuitionFee ? "" : params.tuitionFee
+        }
+
+        return result;
     }
 }

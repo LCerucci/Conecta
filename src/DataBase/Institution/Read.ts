@@ -1,78 +1,82 @@
-import { conn } from "../Connection";
+import { DataBase } from "../Connection";
 import { RowDataPacket, FieldPacket } from 'mysql2';
 import { ReadError } from "../../Error/CRUDerror/CRUDError";
-import { getForgeParam, getForgeId, SQLALL } from "../SQLForge/InstSQLForge";
-
+import { HandleCrud } from "../../Error/Handler/CrudHandler";
 
 export class InstitutionRead {
+    private db: DataBase = new DataBase();
+    private SQLID: string = `SELECT id, name, educationLevel, contact, email, address, link, description FROM Institution WHERE id=?`;
+    private SQLALL: string = "SELECT * FROM Institution";
+
     constructor() {
     }
 
     async readInstitutionById(id: number): Promise<RowDataPacket | null> {
-        try {
+        return this.db.executeSelection( async (conn) => {
+            try{
+                if(!id)
+                    throw new ReadError("Falha ao encontrar instituição.", "Talvez o parâmetro não tenha sido fornecido.");
 
-            if(!id)
-                throw new ReadError("Falha ao encontrar curso.", "Talvez o parâmetro não tenha sido fornecido.");
+                const [result, _metaData]: [RowDataPacket[], FieldPacket[]] = await conn.execute(this.SQLID, [id]);
 
-            await conn.beginTransaction();
+                if(result.length > 0)
+                    return result[0];
+                else
+                    throw new ReadError("Falha ao encontrar instituição.", "Talvez a instituição não exista.");
 
-            const SQL: string = getForgeId(id);
-
-            const [result, _metaData]: [RowDataPacket[], FieldPacket[]] = await conn.execute(SQL, [id]);
-
-            if (result.length > 0) {
-                await conn.commit();
-                return result[0];
+            }catch(err: any){
+                HandleCrud(err);
+                return null;
             }
-            else
-                throw new ReadError("Falha ao encontrar curso.", "Talvez o curso não exista.");
-
-        } catch (err) {
-            console.log(err);
-            await conn.rollback();
-            return null;
-        }
+        });
     }
 
-    async readInstitutionByParam(param: string): Promise<RowDataPacket[] | null> {
-        try {
-            await conn.beginTransaction();
+    async readInstitutionByParam(param: string, item: string): Promise<RowDataPacket[] | null> {
+        return this.db.executeSelection(async (conn) => {
+            try{
+                if(!param)
+                    throw new ReadError("Falha ao encontrar instituição.", "Talvez o parâmetro não tenha sido fornecido.");
+                
+                const SQL: string = this.getForgeParam(param);
+                const [result, _metaData]: [RowDataPacket[], FieldPacket[]] = await conn.execute(SQL, [item]);
 
-            const SQL: string = getForgeParam(param);
+                if(result.length > 0)
+                    return result;
+                else
+                    throw new ReadError("Falha ao encontrar instituição.", "Talvez a instituição não exista.");
 
-            const [result, _metaData]: [RowDataPacket[], FieldPacket[]] = await conn.execute(SQL, [param]);
-
-            if (result.length > 0) {
-                await conn.commit();
-                return result;
+            }catch(err: any){
+                HandleCrud(err);
+                return null;
             }
-            else
-            throw new ReadError("Falha ao encontrar curso.", "Talvez o curso não exista.");
-
-        } catch (err) {
-            await conn.rollback();
-            console.log(err);
-            return null;
-        }
+        });
     }
 
     async readInstitutionAll(): Promise<RowDataPacket[] | null> {
-        try {
-            await conn.beginTransaction();
+        return this.db.executeSelection(async (conn) => {
+            try{
 
-            const [result, _metaData]: [RowDataPacket[], FieldPacket[]] = await conn.execute(SQLALL);
+                const [result, _metaData]: [RowDataPacket[], FieldPacket[]] = await conn.execute(this.SQLALL);
 
-            if (result.length > 0) {
-                await conn.commit();
-                return result;
+                if(result.length > 0)
+                    return result;
+                else
+                    throw new ReadError("Falha ao encontrar instituição.", "Talvez não exista cadastros");
+
+            }catch(err: any){
+                HandleCrud(err);
+                return null;
             }
-            else
-            throw new ReadError("Falha ao encontrar curso.", "Talvez o curso não exista.");
+        });
+    }
 
-        } catch (err) {
-            await conn.rollback();
-            console.log(err);
-            return null;
-        }
+    private getForgeParam(param: string): string{
+
+        const params = ['name', 'educationLevel', 'contact', 'email', 'address', 'link']
+        const finalParam = params.find((element) => (element) === param);
+    
+        const sql: string = `SELECT id, name, educationLevel, contact, email, address, link, description FROM Institution WHERE ${finalParam}=?`
+    
+        return sql;
     }
 }

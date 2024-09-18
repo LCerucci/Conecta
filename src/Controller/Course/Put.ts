@@ -4,9 +4,9 @@ import { UpdateCourse } from "../../Interfaces/Course/CourseUpdate";
 import { FieldError } from '../../Error/Controller/FieldError';
 import { MatchError } from '../../Error/Controller/MatchError';
 
-const Update: CourseUpdateService = new CourseUpdateService();
-
 export class CoursePutController{
+    private Update: CourseUpdateService = new CourseUpdateService();
+
     constructor(){
     }
 
@@ -26,10 +26,12 @@ export class CoursePutController{
                 tuitionFee: req.body.tuitionFee
             }
 
+            console.log(params);
+
             if(!params)
                 throw new MatchError("Erro ao atualizar curso.", "Talvez os tipos não batam com os parâmetros.")
 
-            const result: boolean = await Update.updateCourse(id, params);
+            const result: boolean = await this.Update.updateCourse(id, params);
 
             if(result)
                 res.status(200).json({message: "Curso atualizado com sucesso."});

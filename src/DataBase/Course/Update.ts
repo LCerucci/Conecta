@@ -1,61 +1,61 @@
-import { conn } from "../Connection";
-import { ResultSetHeader, FieldPacket } from "mysql2";
-import { updateForgeParam } from "../SQLForge/CourseSQLForge";
+import { DataBase } from "../Connection";
 import { UpdateError } from "../../Error/CRUDerror/CRUDError";
 import { UpdateCourse } from "../../Interfaces/Course/CourseUpdate";
-
-const message: string = "Falha ao atualizar curso.";
-const deitails: string = "Verifique o fluxo, nenhum campo foi afetado."
+import { HandleCrud } from "../../Error/Handler/CrudHandler";
 
 export class CourseUpdate{
+    private db: DataBase = new DataBase();
+    private message: string = "Falha ao atualizar curso.";
+    private deitails: string = "Verifique o fluxo, nenhum campo foi afetado."
+
     constructor(){
     }
 
     async updateCourse(id: number, params: UpdateCourse): Promise<boolean>{
-        try{
+        return this.db.executeBoolTransaction(async (conn) => {
+            try{
+                if(!id)
+                    throw new UpdateError("Falha ao atualizar curso.", "Talvez o parâmetro não tenha sido fornecido.");
 
-            if(!id)
-                throw new UpdateError("Falha ao atualizar curso.", "Talvez o parâmetro não tenha sido fornecido.");
+                const SQL: string = this.updateForgeParam(params, id);
+                
+                console.log(SQL);
 
-            await conn.beginTransaction();
+                const updateParams: string[] = [];
 
-            if(params.name !== undefined){
-                const SQL: string = updateForgeParam(params.name);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError(message, deitails) 
+                Object.keys(params).forEach((key) => {
+                    if(params[key as keyof UpdateCourse] !== undefined && params[key as keyof UpdateCourse] !== null)
+                        updateParams.push(params[key as keyof UpdateCourse]);
+                });
+
+                if(!SQL || !updateParams)
+                    throw new UpdateError(this.message, this.deitails);
+
+                await conn.execute(SQL, updateParams);
+                return true;
+
+            }catch(err: any){
+                HandleCrud(err);
+                return false;
             }
+        });
+    }
 
-            if(params.field !== undefined){
-                const SQL: string = updateForgeParam(params.field);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError(message, deitails)  
-            }
+    private updateForgeParam(param: UpdateCourse, id: number): string{  
+        const fields: string[] = ['name', 'description', 'field', 'degree', 'tuitionFee'];
+        const params: string[] = [];
+        
+        Object.keys(param).forEach(key => {
+            if(param[key as keyof UpdateCourse]!== undefined)
+                params.push(key as keyof UpdateCourse);
+        });
 
-            if(params.description !== undefined){
-                const SQL: string = updateForgeParam(params.description);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError(message, deitails)  
-            }
+        const finalParams: string[] = fields.filter((element) => params.includes(element));
+        
+        const updateFields: string = finalParams.map(field => `${field}=?`).join(', ');
 
-            if(params.degree !== undefined){
-                const SQL: string = updateForgeParam(params.degree);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError(message, deitails) 
-            }
-
-            if(params.tuitionFee !== undefined){
-                const SQL: string = updateForgeParam(params.tuitionFee);
-                const [result]: [ResultSetHeader, FieldPacket[]] = await conn.execute(SQL, [id]);
-                if(result.affectedRows === 0) throw new UpdateError(message, deitails) 
-            }
-
-            await conn.commit();
-            return true;
-
-        }catch(err){
-            console.log(err);
-            conn.rollback();
-            return false;
-        }
+        const SQL: string = `UPDATE Course SET ${updateFields} WHERE id=${id}`;
+        
+        return SQL;
     }
 }

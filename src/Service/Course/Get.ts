@@ -39,7 +39,7 @@ export class CourseGetService {
         }
     }
 
-    async getCourseByParam(param: string): Promise<CourseResult[] | null> {
+    async getCourseByParam(item: string, param: string): Promise<CourseResult[] | null> {
         try {
 
             let result : RowDataPacket[] | null;
@@ -47,18 +47,18 @@ export class CourseGetService {
             if (!param)
                 result = await Get.readCourseAll();
             else
-                result = await Get.readCourseByParam(param);
+                result = await Get.readCourseByParam(item, param);
 
             if (result !== null) {
                 const info: Course[] = result.map((element) => {
                     return new Course(
-                        element.id,
-                        element.idInst,
                         element.name,
                         element.field,
                         element.description,
                         element.degree,
-                        element.tuitionFee
+                        element.tuitionFee,
+                        element.idInst,
+                        element.id
                     );
                 });
 

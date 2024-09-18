@@ -25,7 +25,6 @@ export class CourseCreateService{
             const course: Course = new Course(name, field, description, degree, tuitionFee, idInstitution);
             const idInst: number | undefined = course.getIdInstitution();
 
-
             if(typeof idInst === 'number'){
                 const result = await Create.createCourse(
                     course.getName(), 

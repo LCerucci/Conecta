@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { FieldError } from "../../Error/Controller/FieldError";
 import { InstitutionCreateService } from "../../Service/Institution/Create";
 
-const Post: InstitutionCreateService = new InstitutionCreateService();
-
 export class InstitutionPostController{
+    private Post: InstitutionCreateService = new InstitutionCreateService();
+
     constructor(){
     }
 
@@ -15,7 +15,7 @@ export class InstitutionPostController{
                 educationLevel: req.body.educationLevel,
                 contact: req.body.contact,
                 email: req.body.email,
-                address: req.body.address,
+                address: req.body.address, 
                 link: req.body.link,
                 description: req.body.description
             }
@@ -23,7 +23,7 @@ export class InstitutionPostController{
             if(!params)
                 throw new FieldError("Erro na criação da instituição.", "Talvez algum campo esteja em branco.");
 
-            const result: boolean = await Post.createInstitution(params);
+            const result: boolean = await this.Post.createInstitution(params);
 
             if(result)
                 res.status(200).json({message: "Instituição criada com sucesso."});

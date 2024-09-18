@@ -4,9 +4,9 @@ import { CourseResult } from "../../Interfaces/Course/CourseGet";
 import { CourseGetService } from "../../Service/Course/Get";
 import { Request, Response, NextFunction } from "express";
 
-const Get: CourseGetService = new CourseGetService();
-
 export class CourseGetController{
+    private Get: CourseGetService = new CourseGetService();
+
     constructor(){
     }
 
@@ -17,7 +17,7 @@ export class CourseGetController{
             if(!id)
                 throw new FieldError("Erro ao resgatar curso.", "O parametro de busca pode não ter sido definido.");
 
-            const course: CourseResult | null = await Get.getCourseById(id);
+            const course: CourseResult | null = await this.Get.getCourseById(id);
 
             if(course !== null)
                 res.status(200).json({course});
@@ -32,12 +32,10 @@ export class CourseGetController{
 
     async getCourseByParam(req: Request, res: Response, next: NextFunction){
         try{
-            const param: string = req.body;
+            const param: string = req.body.param;
+            const item: string = req.body.item;
 
-            if(!param)
-                throw new MatchError("Erro na busca por parametros.", "O parametro pode estar nulo.");
-
-            const courses: CourseResult[] | null = await Get.getCourseByParam(param);
+            const courses: CourseResult[] | null = await this.Get.getCourseByParam(item, param);
 
             if(courses !== null)
                 res.status(200).json({courses});

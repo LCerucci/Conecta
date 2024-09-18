@@ -7,9 +7,10 @@ import { generateJWT } from "../../Service/Auth/GenerateJwt";
 import { verifyPassword } from "../../Service/Auth/VerifyPassword";
 
 
-const Get : UserGetService = new UserGetService();
 
 export class Login{
+    private Get : UserGetService = new UserGetService();
+
     constructor(){
     }
 
@@ -18,7 +19,7 @@ export class Login{
             if (!userName || !password)
                 throw new AuthError("Credenciais não fornecidas.", "Verifique as credenciais.");
     
-            const user: UserDataResult | null = await Get.getUserByName(userName);
+            const user: UserDataResult | null = await this.Get.getUserByName(userName);
     
             if (user !== null) {
                 const verify: boolean = await verifyPassword(password, user.password);

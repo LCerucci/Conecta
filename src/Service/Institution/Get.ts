@@ -39,22 +39,23 @@ export class InstitutionGetService{
         }
     }
 
-    async getInstitutionByParam(param: string): Promise<InstitutionDataResult[] | null>{
+    async getInstitutionByParam(item: string, param: string): Promise<InstitutionDataResult[] | null>{
         try{
             let result: RowDataPacket[] | null;
 
             if(!param)
                 result = await Get.readInstitutionAll();
             else
-                result = await Get.readInstitutionByParam(param);
+                result = await Get.readInstitutionByParam(param, item);
 
             if(result !== null){
                 const info: Institution[] = result?.map((element) => {
+
                     return new Institution(
                         element.id,
                         element.name,
                         element.educationLevel,
-                        element.constact,
+                        element.contact,
                         element.email,
                         element.address,
                         element.link,
@@ -63,6 +64,7 @@ export class InstitutionGetService{
                 });
 
                 const institutions: InstitutionDataResult[] = info.map(element => element.institutionJSON());
+
                 return institutions;
             }
             else

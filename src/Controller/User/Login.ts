@@ -4,10 +4,9 @@ import { Request, Response, NextFunction } from 'express';
 import { setCookie } from "../Cookie/GenerateCookie";
 import { FieldError } from "../../Error/Controller/FieldError";
 
-const LoginService: Login = new Login();
-
-
 export class LoginController {
+    private LoginService: Login = new Login();
+
     constructor(){
     }
 
@@ -20,7 +19,7 @@ export class LoginController {
             if (!userName || !password)
                 throw new FieldError("Erro ao realizar login.", "Verifique as credenciais.");
 
-            const user: LoginResponse | null = await LoginService.login(userName, password);
+            const user: LoginResponse | null = await this.LoginService.login(userName, password);
 
             if (user !== null) {
                 await setCookie(res, 'token', user.jwt);

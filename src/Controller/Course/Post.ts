@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { CourseCreateData } from "../../Interfaces/Course/CourseCreate"
 import { CourseCreateService } from "../../Service/Course/Create";
-import { FieldError } from "../../Error/Controller/FieldError";
 import { MatchError } from "../../Error/Controller/MatchError";
 
-const Create: CourseCreateService = new CourseCreateService();
-
 export class CoursePostController{
+    private Create: CourseCreateService = new CourseCreateService();
+
     constructor(){
     }
 
@@ -24,7 +23,7 @@ export class CoursePostController{
             if(!params)
                 throw new MatchError("Erro ao criar curso.", "Os parametros podem estar vázios ou com os tipos incorretos.");
 
-            const result: boolean = await Create.createCourse(params)
+            const result: boolean = await this.Create.createCourse(params)
 
             if(result)
                 res.status(200).json({message: "Curso criado com sucesso."});
