@@ -5,33 +5,32 @@ import { HandleCrud } from "../../Error/Handler/CrudHandler";
 
 export class CourseUpdate{
     private db: DataBase = new DataBase();
-    private message: string = "Falha ao atualizar curso.";
-    private deitails: string = "Verifique o fluxo, nenhum campo foi afetado."
 
     constructor(){
     }
 
-    async updateCourse(id: number, params: UpdateCourse): Promise<boolean>{
+    async updateCourse(id: number, input: UpdateCourse): Promise<boolean>{
         return this.db.executeBoolTransaction(async (conn) => {
             try{
                 if(!id)
                     throw new UpdateError("Falha ao atualizar curso.", "Talvez o parâmetro não tenha sido fornecido.");
 
-                const SQL: string = this.updateForgeParam(params, id);
-                
-                console.log(SQL);
+                const params: string[] = [input.name, input.description, input.field, input.degree, input.tuitionFee];
+                const filterParams: any[] = [];
 
-                const updateParams: string[] = [];
-
-                Object.keys(params).forEach((key) => {
-                    if(params[key as keyof UpdateCourse] !== undefined && params[key as keyof UpdateCourse] !== null)
-                        updateParams.push(params[key as keyof UpdateCourse]);
+                params.forEach((element) => {
+                    if(element !== undefined && element !== null && element !== "")
+                        filterParams.push(element);
                 });
 
-                if(!SQL || !updateParams)
-                    throw new UpdateError(this.message, this.deitails);
+                if(filterParams.length === 0)
+                    throw new UpdateError("Falha ao atualizar", "Nenhum valor fornecido.");
 
-                await conn.execute(SQL, updateParams);
+                filterParams.push(id);
+
+                const SQL: string = this.updateForgeSQL(input);
+                await conn.execute(SQL, filterParams);
+
                 return true;
 
             }catch(err: any){
@@ -41,20 +40,17 @@ export class CourseUpdate{
         });
     }
 
-    private updateForgeParam(param: UpdateCourse, id: number): string{  
-        const fields: string[] = ['name', 'description', 'field', 'degree', 'tuitionFee'];
-        const params: string[] = [];
-        
-        Object.keys(param).forEach(key => {
-            if(param[key as keyof UpdateCourse]!== undefined)
-                params.push(key as keyof UpdateCourse);
+    private updateForgeSQL(input: UpdateCourse): string{  
+        const fields: string[] = ['name=?', 'description=?', 'field=?', 'degree=?', 'tuitionFee=?'];
+        const params: string[] = [input.name, input.description, input.field, input.degree, input.tuitionFee];
+        const values: string[] = [];
+
+        params.forEach((element, index) => {
+            if(element !== undefined && element !== null && element !== "")
+                values.push(fields[index]);
         });
-
-        const finalParams: string[] = fields.filter((element) => params.includes(element));
         
-        const updateFields: string = finalParams.map(field => `${field}=?`).join(', ');
-
-        const SQL: string = `UPDATE Course SET ${updateFields} WHERE id=${id}`;
+        const SQL: string = `UPDATE Course SET ${values.join(", ")} WHERE id=?`;
         
         return SQL;
     }

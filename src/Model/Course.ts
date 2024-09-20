@@ -1,4 +1,4 @@
-import { InvalidField } from "../Error/Model/RegexError";
+//import { InvalidField } from "../Error/Model/RegexError";
 import { CourseResult } from "../Interfaces/Course/CourseGet"; 
 import { UpdateCourse } from "../Interfaces/Course/CourseUpdate";
 
@@ -14,11 +14,11 @@ export class Course {
     constructor(name: string, field: string, description: string, degree: string, tuitionFee: string, idInst?: number, id?: number) {
         this.id = id;
         this.idInst = idInst;
-        this.name = this.sanitizeName(name) || "";
-        this.description = this.sanitizeDescription(description);
-        this.field = this.sanitizeField(field) || "";
-        this.degree = this.sanitizeDegree(degree) || "";
-        this.tuitionFee = this.sanitizeFee(tuitionFee) || "";
+        this.name = name;
+        this.description = description;
+        this.field = field;
+        this.degree = degree;
+        this.tuitionFee = tuitionFee;
     }
 
     getId(): number | undefined{
@@ -69,8 +69,9 @@ export class Course {
         this.tuitionFee = tuitionFee;
     }
 
+    /*
     sanitizeName(name: string): string | void{
-        console.log(name);
+        console.log(name)
         const regex: RegExp = /^([A-Z][a-z]*)(\s[A-Z][a-z]*){0,10}$/
         if(regex.test(name))
             return name;
@@ -90,7 +91,7 @@ export class Course {
     }
 
     sanitizeField(field: string): string | void{
-        const regex: RegExp = /^[A-Za-z0-9_]{1,30}$/;
+        const regex: RegExp = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9_]{1,30}$/;
         if(regex.test(field))
             return field;
         else
@@ -107,6 +108,7 @@ export class Course {
         else 
             throw new InvalidField("Nível do curso não atende os padrões.", "Verifique os parâmetros de entrada.");
     }
+    */
 
     CourseJSON(): CourseResult{
         return {
@@ -128,7 +130,7 @@ export class Course {
             degree: this.degree === params.degree ? "" : params.degree,
             tuitionFee: this.tuitionFee === params.tuitionFee ? "" : params.tuitionFee
         }
-
+        
         return result;
     }
 }

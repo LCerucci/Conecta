@@ -76,7 +76,7 @@ export class CourseRead{
 
     private getForgeId(id: number): string{
         const param: string = id.toString();
-        const sql: string = `SELECT id, idInstitution, name, field, description, degree, tuitionFee FROM Course WHERE ${param}=?`
+        const sql: string = `SELECT id, idInstitution, name, field, description, degree, tuitionFee FROM Course WHERE id=${param}`
         
         return sql;
     }

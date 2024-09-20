@@ -26,8 +26,6 @@ export class CourseUpdateService{
             
             const field: UpdateCourse = course.updateParamFilter(info);
             
-            console.log(field);
-
             const params: UpdateCourse = {
                 name: field.name,
                 field: field.field,
@@ -38,7 +36,7 @@ export class CourseUpdateService{
 
             const result: boolean = await this.Update.updateCourse(id, params);
 
-            return result? result: false;
+            return result ? result: false;
             
         }catch (err){
             console.log(err);

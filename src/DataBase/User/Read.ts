@@ -5,7 +5,7 @@ import { HandleCrud } from '../../Error/Handler/CrudHandler';
 
 export class UserDB{
     private db: DataBase = new DataBase();
-    private SQL = 'SELECT id, userName, password from User WHERE userName=?';
+    private SQL = 'SELECT id, userName, password, role from User WHERE userName=?';
 
     constructor(){
     }

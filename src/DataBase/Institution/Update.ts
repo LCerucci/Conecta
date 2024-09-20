@@ -12,27 +12,27 @@ export class InstitutionUpdate{
     constructor(){
     }
 
-    async updateInstitution(id: number, params: InstitutionUpadateData): Promise<boolean>{
+    async updateInstitution(id: number, input: InstitutionUpadateData): Promise<boolean>{
         return this.db.executeBoolTransaction(async (conn) => {
             try{
                 if(!id)
                     throw new UpdateError("Falha ao atualizar recurso", "Parametro não fornecido.");
 
-                const SQL: string = this.updateForgeParam(params, id);
-                
-                console.log(SQL);
+                const params: string[] = [input.name, input.educationLevel, input.contact, input.email, input.address, input.link, input.description];
+                const filterParams: any[] = [];
 
-                const updateParams: string[] = [];
-
-                Object.keys(params).forEach((key) => {
-                    if(params[key as keyof InstitutionUpadateData] !== undefined && params[key as keyof InstitutionUpadateData] !== null)
-                        updateParams.push(params[key as keyof InstitutionUpadateData]);
+                params.forEach((element) => {
+                    if(element !== undefined && element !== null && element !== "")
+                        filterParams.push(element);
                 });
 
-                if(!SQL || !updateParams)
-                    throw new UpdateError(this.message, this.deitails);
+                if(filterParams.length === 0)
+                    throw new UpdateError("Falha ao atualizar", "Nenhum valor fornecido.");
 
-                await conn.execute(SQL, updateParams);
+                filterParams.push(id);
+
+                const SQL: string = this.updateForgeSQL(input);
+                await conn.execute(SQL, filterParams);
 
                 return true;
 
@@ -43,20 +43,17 @@ export class InstitutionUpdate{
         });
     }
 
-    private updateForgeParam(param: InstitutionUpadateData, id: number): string{  
-        const fields: string[] = ['name', 'educationLevel', 'contact', 'email', 'address', 'link', 'description'];
-        const params: string[] = [];
-        
-        Object.keys(param).forEach(key => {
-            if(param[key as keyof InstitutionUpadateData]!== undefined)
-                params.push(key as keyof InstitutionUpadateData);
+    private updateForgeSQL(param: InstitutionUpadateData): string{  
+        const fields: string[] = ['name=?', 'educationLevel=?', 'contact=?', 'email=?', 'address=?', 'link=?', 'description=?'];
+        const params: string[] = [param.name, param.educationLevel, param.contact, param.email, param.address, param.link, param.description];
+        const values: string[] = [];
+
+        params.forEach((element, index) => {
+            if(element !== undefined && element !== null && element !== "")
+                values.push(fields[index]);
         });
-
-        const finalParams: string[] = fields.filter((element) => params.includes(element));
         
-        const updateFields: string = finalParams.map(field => `${field}=?`).join(', ');
-
-        const SQL: string = `UPDATE Institution SET ${updateFields} WHERE id=${id}`;
+        const SQL: string = `UPDATE Institution SET ${values.join(", ")} WHERE id=?`;
         
         return SQL;
     }

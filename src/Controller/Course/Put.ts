@@ -26,8 +26,6 @@ export class CoursePutController{
                 tuitionFee: req.body.tuitionFee
             }
 
-            console.log(params);
-
             if(!params)
                 throw new MatchError("Erro ao atualizar curso.", "Talvez os tipos não batam com os parâmetros.")
 
