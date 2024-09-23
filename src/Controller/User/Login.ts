@@ -23,10 +23,10 @@ export class LoginController {
 
             if (user !== null) {
                 await setCookie(res, 'token', user.jwt);
-                res.status(200).json({ message: 'Bem Vindo!' });
+                res.status(200).redirect(`/profile`);
             }
             else
-                res.status(403).json({ message: 'Falha ao logar, verifique suas credenciais e tente novamente.' });
+                res.status(403).render('login', { message: 'Falha ao logar, verifique suas credenciais e tente novamente.' });
 
         } catch (err) {
             next(err);

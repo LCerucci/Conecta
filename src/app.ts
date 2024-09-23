@@ -1,3 +1,4 @@
+import path from 'path';
 import cookiePrser from 'cookie-parser';
 import { userRoute } from "./Routes/User/UserRoute";
 import { courseRoute } from "./Routes/Course/CourseRoute";
@@ -6,6 +7,10 @@ import express, { Request, Response, NextFunction } from 'express';
 import { institutionRoute } from "./Routes/Instituition/InstitutionRoute";
 
 const app = express();
+
+//Render config
+app.set('view engine', 'ejs');
+app.set('vies', path.join(__dirname, 'View'));
 
 //Json
 app.use(express.json());
