@@ -12,8 +12,8 @@ Initially, JavaScript was used for development, which worked fine but presented 
 ### MySQL
 MySQL is the chosen DBMS for this project due to familiarity and widespread use among developers and students. It's easy to maintain the database using MySQL, and the Workbench tool is handy for those who aren't accustomed to writing SQL commands.
 
-### React
-Given its learning curve, React is a great choice for building page features. The use of components simplifies feature edits in the frontend and makes the code more readable without the need for extensive HTML.
+### EJS
+JavaScript teamplate, simle to use, focused on server side proccess.
 
 ### Express
 Express is simple to use and easy to learn. Students who need to develop and implement new features will quickly become familiar with Express, especially if they are already comfortable with asynchronous programming.
